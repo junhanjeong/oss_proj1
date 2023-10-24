@@ -39,9 +39,8 @@ main() {
 		echo
                 read -p "Please enter the 'movie id'(1~1682):" movie_id
 		echo
-		avg_rating=$(awk -F'\t' -v id=$movie_id '$2 == id { sum += $3; count++ } END { if (count > 0) printf "%.6f", sum/count }' $2)
-		rounded_avg_rating=$(echo "$avg_rating" | awk -v avg_rating="$avg_rating" 'BEGIN { if((avg_rating * 1e6) != int(avg_rating * 1e6)) { avg_rating += 5e-6; tmp_avg_rating = sprintf("%.5f", avg_rating); avg_rating = tmp_avg_rating + 0; } } { printf "%g\n", avg_rating }')
-                echo "average rating of $movie_id: $rounded_avg_rating"
+		avg_rating=$(awk -F'\t' -v id=$movie_id '$2 == id { sum += $3; count++ } END { if (count > 0) print sum/count }' $2)
+                echo "average rating of $movie_id: $avg_rating"
 		echo
                 ;;
 	    4)
@@ -95,12 +94,7 @@ main() {
 		    END {
 			for (movie in sum) {
 			    avg = sum[movie]/count[movie];
-			    if ((avg * 1e6) != int(avg * 1e6)) {
-				avg += 5e-6
-				rounded_avg = sprintf("%.5f", avg)
-				avg = rounded_avg + 0
-			    }
-			    printf "%d %g\n", movie, avg
+			    print movie, avg
 			}
 		    }' $2 | sort -k1,1n
 		    echo
